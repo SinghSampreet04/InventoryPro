@@ -168,7 +168,7 @@ With Docker:
 docker compose up -d database
 ```
 
-This creates an `inventorydb` database on port `5432` using the local development credentials defined in `compose.yaml`.
+This creates an `inventorydb` database on port `5433` using the local development credentials defined in `compose.yaml`. The non-default host port avoids conflicts with an existing PostgreSQL installation.
 
 ### Run the Backend
 
