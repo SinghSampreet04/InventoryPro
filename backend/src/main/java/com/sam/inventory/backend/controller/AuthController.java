@@ -1,12 +1,15 @@
 package com.sam.inventory.backend.controller;
 
-import com.sam.inventory.backend.entity.User;
+import com.sam.inventory.backend.dto.AuthRequest;
+import com.sam.inventory.backend.dto.AuthResponse;
 import com.sam.inventory.backend.service.AuthService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     private final AuthService authService;
@@ -16,12 +19,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
-        return authService.register(user);
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody AuthRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        return authService.login(user);
+    public AuthResponse login(@Valid @RequestBody AuthRequest request) {
+        return authService.login(request);
     }
 }

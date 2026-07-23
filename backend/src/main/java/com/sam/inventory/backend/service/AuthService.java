@@ -1,45 +1,72 @@
 package com.sam.inventory.backend.service;
 
+import com.sam.inventory.backend.dto.AuthRequest;
+import com.sam.inventory.backend.dto.AuthResponse;
 import com.sam.inventory.backend.entity.User;
+import com.sam.inventory.backend.exception.ConflictException;
+import com.sam.inventory.backend.exception.InvalidCredentialsException;
 import com.sam.inventory.backend.repository.UserRepository;
+import com.sam.inventory.backend.security.JwtService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository) {
+    public AuthService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService
+    ) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-    public String register(User user) {
-    user.setUsername(user.getUsername().trim());
-    user.setPassword(user.getPassword().trim());
+    @Transactional
+    public AuthResponse register(AuthRequest request) {
+        String username = normalizeUsername(request.username());
+        if (userRepository.existsByUsernameIgnoreCase(username)) {
+            throw new ConflictException("Username is already in use");
+        }
 
-    userRepository.save(user);
-    return "User registered";
+        User user = userRepository.save(new User(
+                username,
+                passwordEncoder.encode(request.password())
+        ));
+
+        return new AuthResponse(jwtService.generateToken(user.getUsername()), user.getUsername());
     }
 
-public String login(User user) {
+    @Transactional
+    public AuthResponse login(AuthRequest request) {
+        String username = normalizeUsername(request.username());
+        User user = userRepository.findByUsernameIgnoreCase(username)
+                .orElseThrow(InvalidCredentialsException::new);
 
-    System.out.println("INPUT USERNAME: " + user.getUsername());
+        boolean legacyPassword = !user.getPasswordHash().startsWith("$2");
+        boolean passwordMatches = legacyPassword
+                ? user.getPasswordHash().equals(request.password())
+                : passwordEncoder.matches(request.password(), user.getPasswordHash());
 
-    User dbUser = userRepository.findAll()
-            .stream()
-            .filter(u -> u.getUsername().equals(user.getUsername()))
-            .findFirst()
-            .orElse(null);
+        if (!passwordMatches) {
+            throw new InvalidCredentialsException();
+        }
 
-    if (dbUser == null) {
-        return "LOGIN_FAILED";
+        if (legacyPassword) {
+            user.setPasswordHash(passwordEncoder.encode(request.password()));
+            userRepository.save(user);
+        }
+
+        return new AuthResponse(jwtService.generateToken(user.getUsername()), user.getUsername());
     }
 
-    if (dbUser.getPassword().equals(user.getPassword())) {
-        return "LOGIN_SUCCESS";
+    private String normalizeUsername(String username) {
+        return username.trim().toLowerCase();
     }
-
-    return "LOGIN_FAILED";
-}
 }
