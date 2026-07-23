@@ -1117,7 +1117,9 @@ select.input {
 
 .loginCard {
   width: min(420px, 100%);
+  margin-inline: auto;
   padding: 38px;
+  justify-self: center;
   border: 1px solid var(--border);
   border-radius: 18px;
   background: rgba(13, 25, 42, 0.92);
