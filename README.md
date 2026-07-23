@@ -1,4 +1,8 @@
-# 📦 InventoryPro
+<p align="center">
+  <img src="frontend/public/inventorypro-logo.png" alt="InventoryPro logo" width="112" />
+</p>
+
+<h1 align="center">InventoryPro</h1>
 
 > A full-stack inventory management and analytics platform with secure authentication, product operations, stock alerts, category insights, and a responsive SaaS-style workspace.
 

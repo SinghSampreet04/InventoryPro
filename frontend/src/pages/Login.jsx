@@ -43,7 +43,13 @@ export default function Login({ onAuthenticated }) {
   return (
     <main className="loginPage">
       <section className="loginCard" aria-labelledby="login-title">
-        <div className="loginMark" aria-hidden="true">IP</div>
+        <img
+          className="loginMark"
+          src="/inventorypro-logo.png"
+          alt=""
+          width="52"
+          height="52"
+        />
         <p className="eyebrow">Inventory intelligence</p>
         <h1 id="login-title">InventoryPro</h1>
         <p className="loginSubtitle">

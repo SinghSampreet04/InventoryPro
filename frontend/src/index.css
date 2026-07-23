@@ -121,19 +121,13 @@ p {
 
 .logoMark,
 .loginMark {
-  display: grid;
+  display: block;
   width: 38px;
   height: 38px;
-  place-items: center;
   border: 1px solid rgba(126, 159, 255, 0.32);
   border-radius: 11px;
-  background: linear-gradient(145deg, #5b83ff, #384fb6);
   box-shadow: 0 10px 26px rgba(59, 94, 212, 0.28);
-  color: white;
-  font-family: "Manrope", sans-serif;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: -0.04em;
+  object-fit: cover;
 }
 
 .logoText {
@@ -1132,6 +1126,9 @@ select.input {
 }
 
 .loginCard .loginMark {
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
   margin-bottom: 24px;
 }
 

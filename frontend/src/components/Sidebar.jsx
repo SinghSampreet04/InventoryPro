@@ -15,7 +15,13 @@ export default function Sidebar({ logout, onClose, open, username }) {
       <aside className={`sidebar ${open ? "open" : ""}`}>
         <div className="sidebarTop">
           <div className="brand">
-            <div className="logoMark">IP</div>
+            <img
+              className="logoMark"
+              src="/inventorypro-logo.png"
+              alt=""
+              width="38"
+              height="38"
+            />
             <div>
               <div className="logoText">InventoryPro</div>
               <div className="logoCaption">Operations console</div>
